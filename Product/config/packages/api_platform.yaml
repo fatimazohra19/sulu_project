@@ -1,0 +1,14 @@
+api_platform:
+    title: 'Votre API'  # Le titre de votre API
+    description: 'Description de votre API'  # La description de votre API
+    version: '1.0.0'  # Version de l'API
+    formats:
+        json: ['application/json']  # Format principal de sortie (JSON)
+    docs_formats:
+        jsonld: ['application/ld+json']  # Format JSON-LD pour les documents
+        jsonopenapi: ['application/vnd.openapi+json']  # Format OpenAPI
+        html: ['text/html']  # Format HTML pour la documentation
+    defaults:
+        stateless: true  # La configuration stateless pour les API (sans état)
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']  # En-têtes de cache pour gérer la mise en cache en fonction du type de contenu, autorisation et origine
