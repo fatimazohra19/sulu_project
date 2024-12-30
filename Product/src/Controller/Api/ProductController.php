@@ -39,7 +39,7 @@ class ProductController extends AbstractApiController
         return $this->apiResponse(json_decode($data, true));
     }
 
-    #[Route('', name: 'api_products_show', methods: ['GET'])]
+    #[Route('/products/{id}', name: 'api_products_show', methods: ['GET'])]
     public function show(int $id): Response
     {
         $product = $this->productRepository->find($id);
@@ -56,29 +56,39 @@ class ProductController extends AbstractApiController
     #[Route('/products', name: 'api_products_create', methods: ['POST'])]
     public function create(Request $request): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $product = new Product();
-        $product->setName($data['name']);
-        $product->setPrice($data['price']);
-        $product->setQuantity($data['quantity']);
-        $product->setSelected($data['selected'] ?? false);
-        $product->setAvailable($data['available'] ?? true);
-
-        $errors = $this->validator->validate($product);
-        if (count($errors) > 0) {
-            $errorsString = (string) $errors;
-            return $this->apiError($errorsString, Response::HTTP_BAD_REQUEST);
+        try {
+            $data = json_decode($request->getContent(), true);
+            
+            if (!$data) {
+                return $this->apiError('Invalid JSON', Response::HTTP_BAD_REQUEST);
+            }
+    
+            $product = new Product();
+            $product
+                ->setName($data['name'] ?? '')
+                ->setPrice($data['price'] ?? 0)
+                ->setQuantity($data['quantity'] ?? 0)
+                ->setSelected($data['selected'] ?? false)
+                ->setAvailable($data['available'] ?? true);
+    
+            $errors = $this->validator->validate($product);
+            if (count($errors) > 0) {
+                return $this->apiError((string) $errors, Response::HTTP_BAD_REQUEST);
+            }
+    
+            $this->entityManager->persist($product);
+            $this->entityManager->flush();
+    
+            return $this->apiResponse(
+                json_decode($this->serializer->serialize($product, 'json'), true), 
+                Response::HTTP_CREATED
+            );
+        } catch (\Exception $e) {
+            return $this->apiError($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
-
-        $this->entityManager->persist($product);
-        $this->entityManager->flush();
-
-        $data = $this->serializer->serialize($product, 'json');
-
-        return $this->apiResponse(json_decode($data, true), Response::HTTP_CREATED);
     }
 
-    #[Route('', name: 'api_products_update', methods: ['PUT'])]
+    #[Route('/products/{id}', name: 'api_products_update', methods: ['PUT'])]
     public function update(int $id, Request $request): Response
     {
         $product = $this->productRepository->find($id);
@@ -107,8 +117,9 @@ class ProductController extends AbstractApiController
         return $this->apiResponse(json_decode($data, true));
     }
 
-    #[Route('', name: 'api_products_delete', methods: ['DELETE'])]
+    #[Route('/products/{id}', name: 'api_products_delete', methods: ['DELETE'])]
     public function delete(int $id): Response
+    
     {
         $product = $this->productRepository->find($id);
 
