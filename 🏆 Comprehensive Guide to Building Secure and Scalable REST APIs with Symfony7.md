@@ -322,9 +322,3 @@ server {
    - Écrivez des tests unitaires et fonctionnels
    - Suivez les standards PSR
 
-## Besoin d'Aide?
-
-- Documentation Symfony : [https://symfony.com/doc/current/index.html](https://symfony.com/doc/current/index.html)
-- Documentation API Platform : [https://api-platform.com/docs/](https://api-platform.com/docs/)
-- Stack Overflow : [https://stackoverflow.com/questions/tagged/symfony](https://stackoverflow.com/questions/tagged/symfony)
-
