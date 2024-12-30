@@ -24,17 +24,17 @@ Ce guide détaille la configuration d'une API REST moderne avec Symfony 7 dans l
 
 1. Installez les dépendances nécessaires :
 
-```bash
+bash
 composer require nelmio/cors-bundle
 composer require symfony/serializer-pack
 composer require api-platform/core
-```
+
 
 ## Configuration CORS
 
 1. Créez le fichier `config/packages/nelmio_cors.yaml` :
 
-```yaml
+yaml
 nelmio_cors:
     defaults:
         origin_regex: true
@@ -48,34 +48,34 @@ nelmio_cors:
             allow_origin: ['*']
             allow_headers: ['*']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
-```
+
 
 2. Ajoutez dans `.env` :
 
-```env
+env
 ###> nelmio/cors-bundle ###
 CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
 ###< nelmio/cors-bundle ###
-```
+
 
 ## Configuration des Routes
 
 1. Créez/Modifiez `config/routes.yaml` :
 
-```yaml
+yaml
 api_controllers:
     resource:
         path: ../src/Controller/Api/
         namespace: App\Controller\Api
     type: attribute
     prefix: '/api/v1'
-```
+
 
 ## Structure du Projet
 
 Créez la structure suivante :
 
-```
+
 src/
 ├── Controller/
 │   └── Api/
@@ -84,13 +84,13 @@ src/
 ├── Entity/
 ├── Repository/
 └── Service/
-```
+
 
 ## Implémentation des Contrôleurs
 
 1. Créez le contrôleur abstrait (`AbstractApiController.php`) :
 
-```php
+php
 namespace App\Controller\Api;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -121,11 +121,11 @@ abstract class AbstractApiController extends AbstractController
         );
     }
 }
-```
+
 
 2. Exemple de contrôleur d'API (`ArticleApiController.php`) :
 
-```php
+php
 namespace App\Controller\Api;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -169,13 +169,13 @@ class ArticleApiController extends AbstractApiController
         }
     }
 }
-```
+
 
 ## Configuration de la Sécurité
 
 1. Configurez `config/packages/security.yaml` :
 
-```yaml
+yaml
 security:
     enable_authenticator_manager: true
     providers:
@@ -189,13 +189,13 @@ security:
             stateless: true
             provider: users_in_memory
             # Configurez votre méthode d'authentification ici
-```
+
 
 ## Documentation API
 
 1. Configurez API Platform dans `config/packages/api_platform.yaml` :
 
-```yaml
+yaml
 api_platform:
     title: 'Votre API'
     description: 'Description de votre API'
@@ -206,11 +206,11 @@ api_platform:
         jsonld: ['application/ld+json']
         jsonopenapi: ['application/vnd.openapi+json']
         html: ['text/html']
-```
+
 
 2. Exemple d'entité avec documentation (`Article.php`) :
 
-```php
+php
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -246,21 +246,21 @@ class Article
         return $this;
     }
 }
-```
+
 
 ## Tests
 
 Pour vérifier que tout fonctionne :
 
 1. Démarrez le serveur :
-```bash
+bash
 symfony server:start
-```
+
 
 2. Testez un endpoint :
-```bash
+bash
 curl -X GET http://localhost:8000/api/v1/articles
-```
+
 
 ## Notes importantes
 
@@ -271,4 +271,3 @@ curl -X GET http://localhost:8000/api/v1/articles
 - Suivez les bonnes pratiques REST
 - Pensez à la pagination pour les listes
 - Utilisez les groupes de sérialisation pour contrôler les données exposées
-
