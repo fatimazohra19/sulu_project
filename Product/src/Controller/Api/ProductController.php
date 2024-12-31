@@ -132,4 +132,43 @@ class ProductController extends AbstractApiController
 
         return $this->apiResponse(null, Response::HTTP_NO_CONTENT);
     }
+
+    // Soufiane //
+
+    // Get selected products
+    #[Route('/products/selected', methods: ['GET'])]
+    public function getSelectedProducts(ProductRepository $productRepository): JsonResponse
+    {
+        $selectedProducts = $productRepository->findBy(['selected' => true]);
+        return $this->json($selectedProducts);
+    }
+
+    // Get available products
+    #[Route('/products/available', methods: ['GET'])]
+    public function getAvailableProducts(ProductRepository $productRepository): JsonResponse
+    {
+        $availableProducts = $productRepository->findBy(['available' => true]);
+        return $this->json($availableProducts);
+    }
+
+    // Search products by name
+    #[Route('/products/search', methods: ['GET'])]
+    public function search(Request $request, ProductRepository $productRepository): JsonResponse
+    {
+        $keyword = $request->query->get('name', '');
+
+        // Search for products where the name contains the keyword
+        $products = $productRepository->createQueryBuilder('p')
+            ->where('p.name LIKE :keyword')
+            ->setParameter('keyword', '%' . $keyword . '%')
+            ->getQuery()
+            ->getResult();
+
+        if (empty($products)) {
+            return new JsonResponse(['message' => 'No products found'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return $this->json($products);
+    }
+
 }
