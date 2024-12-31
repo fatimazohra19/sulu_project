@@ -31,7 +31,7 @@ Ce guide détaille la configuration d'une API REST moderne avec Symfony 7 dans l
 1. Créez un nouveau projet Symfony :
 
 ```bash
-symfony new api-project --version="7.*" --webapp
+symfony new api-project --version="7.*" 
 cd api-project
 ```
 
